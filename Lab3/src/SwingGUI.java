@@ -6,6 +6,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import custom.Fluids.Juice;
+import custom.Fluids.Water;
+import custom.Human.Human;
+import custom.Vessels.Bottle;
+import custom.Vessels.Cup;
+
 public class SwingGUI 
 {
 	private Human human;

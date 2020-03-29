@@ -1,15 +1,17 @@
+package custom.Vessels;
+import custom.Fluids.*;
 
-public class Vessel 
+public class Vessel implements Cloneable
 {
 	protected Fluid contents = new Fluid(0);
 	public final float volume;
 	
-	Vessel(float vol)
+	public Vessel(float vol)
 	{
 		volume = vol;
 	}
 
-	Fluid pourOutLiquid(float amount)
+	public Fluid pourOutLiquid(float amount)
 	{
 		Fluid temp = new Fluid(0);
 		
@@ -32,7 +34,7 @@ public class Vessel
 		return temp;
 	}
 	
-	void acceptLiquid(Fluid fluid)
+	public void acceptLiquid(Fluid fluid)
 	{	
 		if(fluid.getVolume() == 0)
 			return;
@@ -48,14 +50,19 @@ public class Vessel
 	}
 	
 	
-	float getFluidAmount()
+	public float getFluidAmount()
 	{
 		return contents.getVolume();
 	}
 	
-	String getFluidType()
+	public String getFluidType()
 	{
 		return contents.getType();
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	
 }

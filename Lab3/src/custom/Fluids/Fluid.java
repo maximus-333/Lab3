@@ -1,25 +1,26 @@
+package custom.Fluids;
 
 
 public class Fluid implements Cloneable 
 {
 	protected float volume;
 	
-	Fluid(float vol)
+	public Fluid(float vol)
 	{
 		volume = vol;
 	}
 	
-	float getVolume()
+	public float getVolume()
 	{
 		return volume;
 	}
 	
-	void setVolume(float vol)
+	public void setVolume(float vol)
 	{
 		volume = vol;
 	}
 
-	String getType()
+	public String getType()
 	{
 		return "fluid";
 	}

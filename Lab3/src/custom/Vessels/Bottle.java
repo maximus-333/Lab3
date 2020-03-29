@@ -1,8 +1,10 @@
+package custom.Vessels;
+import custom.Fluids.Fluid;
 
 public class Bottle extends Vessel {
 	private String cap;
 	
-	Bottle(float vol, String capType, Fluid contains)
+	public Bottle(float vol, String capType, Fluid contains)
 	{
 		super(vol);
 		cap = capType;
@@ -10,7 +12,7 @@ public class Bottle extends Vessel {
 		super.contents = contains;
 	}
 	
-	String getCapType()
+	public String getCapType()
 	{
 		return cap;
 	}

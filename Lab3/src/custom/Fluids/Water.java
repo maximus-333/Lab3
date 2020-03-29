@@ -1,15 +1,16 @@
+package custom.Fluids;
 
 
 public class Water extends Fluid
 {
 	
-	Water(float volume)
+	public Water(float volume)
 	{
 		super(volume);
 	}
 	
 	@Override
-	String getType() {
+	public String getType() {
 		return "water";
 	}
 }

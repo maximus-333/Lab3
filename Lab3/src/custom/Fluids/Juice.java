@@ -1,22 +1,23 @@
+package custom.Fluids;
 
 
 public class Juice extends Fluid
 {
 	private String flavor;
 	
-	Juice(float volume, String flavor)
+	public Juice(float volume, String flavor)
 	{
 		super(volume);	//Вызов конструктора суперкласса
 		this.flavor = flavor;
 	}
 	
-	String getFlavor()
+	public String getFlavor()
 	{
 		return flavor;
 	}
 
 	@Override
-	String getType() {
+	public String getType() {
 		return flavor + " juice";
 	}
 	
