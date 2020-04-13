@@ -4,7 +4,7 @@ import custom.Fluids.*;
 public class Vessel implements Cloneable
 {
 	protected Fluid contents = new Fluid(0);
-	public final float volume;
+	protected final float volume;
 	
 	public Vessel(float vol)
 	{
@@ -50,15 +50,11 @@ public class Vessel implements Cloneable
 	}
 	
 	
-	public float getFluidAmount()
-	{
-		return contents.getVolume();
-	}
+	public float getFluidAmount() {return contents.getVolume();}
 	
-	public String getFluidType()
-	{
-		return contents.getType();
-	}
+	public float getVolume() {return volume;}
+	
+	public String getFluidType() {return contents.getType();}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {

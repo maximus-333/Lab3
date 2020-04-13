@@ -1,148 +1,218 @@
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
-import custom.Fluids.Juice;
-import custom.Fluids.Water;
 import custom.Human.Human;
+import custom.Shop.Shop;
 import custom.Vessels.Bottle;
 import custom.Vessels.Cup;
+import custom.Vessels.Vessel;
 
-public class SwingGUI 
-{
-	private Human human;
-	private Bottle bottle1;
-	private Bottle bottle2;
-	private Cup cup;
+public class SwingGUI{
 	
-	//GUI stuff
-	private JFrame frame = new JFrame("Test window");
-	private JPanel mainPanel = new JPanel(new GridBagLayout());
+	private JFrame frame;
+	private JPanel panel;
 	private GridBagConstraints gbc = new GridBagConstraints();
-	//Visible elements:
-	//1st row
-	private JLabel bottle1Info = new JLabel();
-	private JLabel bottle1Contents = new JLabel();
-	private JButton bottle1Button = new JButton("Fill the cup");
-	//2nd row
-	private JLabel bottle2Info = new JLabel();
-	private JLabel bottle2Contents = new JLabel();
-	private JButton bottle2Button = new JButton("Fill the cup");
-	//3rd row
+	
+	//Actor objects
+	private Shop shop = new Shop();
+	private Human human = new Human("Ivan");
+	private Bottle bottle = null;
+	private Cup cup = new Cup(2, "plastic");
+	
+	//Visible elements
+
+	//Shop-related elements
+	private JLabel shopInfo = new JLabel("Available purchases:");
+	private JTextArea shopStock = new JTextArea(1, 15);
+	private JLabel choiceHint = new JLabel("Type item number to buy it:");
+	private JTextField itemChoice = new JTextField(10);
+		//some labels, idk
+	//Item(bottle)-related elements
+	private JLabel bottleInfo = new JLabel();
+	private JLabel bottleContents = new JLabel();
+	//Cup-related elements
 	private JLabel cupInfo = new JLabel();
 	private JLabel cupContents = new JLabel();
-	//4th row
+	private JButton fillCupButton = new JButton("Fill");
+	//Human-related elements
 	private JLabel humanInfo = new JLabel();
-	private JLabel humanReport = new JLabel();
-	private JButton humanDrink = new JButton("Drink from cup");
+	private JLabel humanStatus = new JLabel();
+	private JButton humanDrinkButton = new JButton("Drink");
 	
 	
-	SwingGUI(String humanName, float bottle1Vol, String bottle1Cap,
-			 float bottle2Vol, String bottle2Cap, String bottle2JuiceType, 
-			 float cupVol, String cupHandle)
-	{
-		//no parameters for now. Gonna add later
-		human = new Human(humanName);
-		bottle1 = new Bottle(bottle1Vol, bottle1Cap, new Water(0));
-		bottle2 = new Bottle(bottle2Vol, bottle2Cap, new Juice(0, bottle2JuiceType));
-		cup = new Cup(cupVol, cupHandle);
-		
-		//Initialize labels that won't change
-		bottle1Info.setText("Bottle. Total volume: " + bottle1Vol 
-						  + ". Contains " + bottle1.getFluidType());
-		bottle2Info.setText("Bottle. Total volume: " + bottle2Vol 
-				  		  + ". Contains " + ' ' + bottle2.getFluidType());
-		cupInfo.setText("Cup. Total volume: " + cupVol 
-					  + ". Holder is " + cup.getHolderType());
-		humanInfo.setText("Human. Name is " + human.getName());
-		
+	
+	public SwingGUI() {
+		frame = new JFrame("Lab 3");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(600, 300);
-		frame.add(mainPanel);
+		panel = new JPanel(new GridBagLayout());
+		frame.add(panel);
+		
+		
+		//loads info into shopStock text area
+		loadStockInfo();
+		
+		updateLabels();
+		
+		humanInfo.setText("Human. Name is " + human.getName());
+		
 		
 		gbc.insets = new Insets(2, 2, 2, 2);
-		//Placing window elements
-		//row 1
+		//Placing GUI elements
+		gbc.gridx = 0;
 		gbc.gridy = 0;
+		panel.add(shopInfo, gbc);
+		
 		gbc.gridx = 0;
-		mainPanel.add(bottle1Info, gbc);
-		gbc.gridx = 1;
-		mainPanel.add(bottle1Contents, gbc);
-		gbc.gridx = 2;
-		mainPanel.add(bottle1Button, gbc);
-		//row 2
 		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		panel.add(shopStock, gbc);
+		gbc.gridwidth = 1;
+		
 		gbc.gridx = 0;
-		mainPanel.add(bottle2Info, gbc);
-		gbc.gridx = 1;
-		mainPanel.add(bottle2Contents, gbc);
-		gbc.gridx = 2;
-		mainPanel.add(bottle2Button, gbc);
-		//row 3
 		gbc.gridy = 2;
-		gbc.gridx = 0;
-		mainPanel.add(cupInfo, gbc);
+		panel.add(choiceHint, gbc);
+		
 		gbc.gridx = 1;
-		mainPanel.add(cupContents, gbc);
-		//row 4
+		gbc.gridy = 2;
+		panel.add(itemChoice, gbc);
+		
+		gbc.gridx = 0;
 		gbc.gridy = 3;
-		gbc.gridx = 0;
-		mainPanel.add(humanInfo, gbc);
+		panel.add(bottleInfo, gbc);
+		
 		gbc.gridx = 1;
-		mainPanel.add(humanReport, gbc);
+		gbc.gridy = 3;
+		panel.add(bottleContents, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		panel.add(cupInfo, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		panel.add(cupContents, gbc);
+		
 		gbc.gridx = 2;
-		mainPanel.add(humanDrink, gbc);
+		gbc.gridy = 4;
+		panel.add(fillCupButton, gbc);
 		
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		panel.add(humanInfo, gbc);
 		
-		//Setting up actions
-		bottle1Button.addActionListener(new ActionListener() {
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		panel.add(humanStatus, gbc);
+		
+		gbc.gridx = 2;
+		gbc.gridy = 5;
+		panel.add(humanDrinkButton, gbc);
+		
+		//Assigning actions
+		
+		fillCupButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				human.pourLiquid(bottle1, cup);
+				human.pourLiquid(bottle, cup);
 				updateLabels();
 			}
 		});
-		bottle2Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				human.pourLiquid(bottle2, cup);
-				updateLabels();
-			}
-		});
-		humanDrink.addActionListener(new ActionListener() {
+		
+		humanDrinkButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String result = human.drinkLiquid(cup);
-				humanReport.setText(result);
+				humanStatus.setText(result);
+				updateLabels();
+			}
+		});
+		
+		itemChoice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//trying to get item number. On fail, output message into same field
+				//On success, purchase item under that number
+				int option;
+				try {
+					option = Integer.parseInt(itemChoice.getText());
+				}
+				catch (NumberFormatException exc){
+					option = -1;
+				}
+				Vessel boughtItem = human.buyItem(shop, option);
+				if(boughtItem != null)
+				{
+					bottle = (Bottle)boughtItem;
+				}
+				else
+				{
+					itemChoice.setText("Can't buy item");
+				}
+				
 				updateLabels();
 			}
 		});
 
-		updateLabels();
 		
 		frame.setVisible(true);
 	}
 	
 	
-	private void updateLabels()
-	{
-		bottle1Contents.setText("Liquid left: " + bottle1.getFluidAmount());
-		bottle2Contents.setText("Liquid left: " + bottle2.getFluidAmount());
-
-		String cupContentInfo;
-		if(cup.getFluidAmount() == 0)
+	private void updateLabels() {
+		//Updating labels for Bottle
+		if(bottle == null)
 		{
-			cupContentInfo = "The cup is empty.";
+			bottleInfo.setText("Bottle isn't bought yet");
+			bottleContents.setText("");
 		}
 		else
 		{
-			cupContentInfo = "Cup has " + cup.getFluidAmount() 
-						   + " units of " + cup.getFluidType();
+			bottleInfo.setText("Bottle. Total volume: " + bottle.getVolume() + 
+							   ". Contains " + bottle.getFluidType());
+			bottleContents.setText("Liquid left: " + bottle.getFluidAmount() + " units");
 		}
-		cupContents.setText(cupContentInfo);
+		
+		//Updating labels for Cup
+		cupInfo.setText("Cup. Total volume: " + cup.getVolume() 
+					  + ". Holder is " + cup.getHolderType());
+		if(cup.getFluidAmount() == 0)
+		{
+			cupContents.setText("The cup is empty.");
+		}
+		else
+		{
+			cupContents.setText("Cup has " + cup.getFluidAmount() + 
+								" units of " + cup.getFluidType());
+		}
 	}
+	
+	
+	
+	
+	//Places all item info in text area, one per line
+	private void loadStockInfo() {
+		int rows = shop.getItemAmount();
+		shopStock.setRows(rows);
+		shopStock.setText("");
+		shopStock.setEditable(false);
+		for(int i = 0; i<rows; i++)
+		{
+			shopStock.append((i+1) + ") " + shop.getItemInfo(i) + '\n');
+		}
+		
+	}
+	
+	
 }

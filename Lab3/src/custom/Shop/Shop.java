@@ -2,6 +2,11 @@ package custom.Shop;
 
 import javax.naming.InvalidNameException;
 
+import custom.Fluids.Coffee;
+import custom.Fluids.Fluid;
+import custom.Fluids.Juice;
+import custom.Fluids.Tea;
+import custom.Fluids.Water;
 import custom.Vessels.*;
 
 public class Shop {
@@ -12,41 +17,49 @@ public class Shop {
 	//On failure - throw an error
 	//On sucess - return predefined object
 	
-	Shop(){
+	public Shop(){
 		//Will have predefined and infinite stock
 		stock = new Vessel[4];
 		
-		//initialize with vessels for:
-		//coffee
-		//tea
-		//water
-		//(apple) juice
-		
-		
-		
+		stock[0] = new Bottle(5, "red", new Coffee(0));
+		stock[1] = new Bottle(6, "blue", new Tea(0));
+		stock[2] = new Bottle(8, "yellow", new Water(0));
+		stock[3] = new Bottle(3, "green", new Juice(0, "apple"));
 	}
 	
 	
-	Vessel serveCustomer(String productName) 
-			throws InvalidNameException, CloneNotSupportedException
+	public Vessel serveCustomer(int num) 
 	{
-		//Search the stock, give item or throw an exception
-		
-		for(int i = 0;i < stock.length;i++)
+		//Search the stock, give item or NULL
+		if(num >= 1 && num <= stock.length)
 		{
-			if(productName == stock[i].getFluidType())
-			{
-				return giveItem(i);
-			}			
+			try {
+				return giveItem(num - 1);
+			}
+			catch (CloneNotSupportedException exc){
+				exc.printStackTrace();
+				return null;
+			}
 		}
+		return null;
 		
-		throw new InvalidNameException("Item not found in stock");
 	}
 	
 	private Vessel giveItem(int position) throws CloneNotSupportedException
 	{
 		//clone an object, return it
 		return (Vessel)stock[position].clone();
+	}
+	
+	public int getItemAmount() {return stock.length;}
+	
+	public String getItemInfo(int pos) {
+		if(pos >= 0 && pos < stock.length)
+			return stock[pos].getFluidAmount() + 
+				   " units of " +
+				   stock[pos].getFluidType();
+		else
+			return null;
 	}
 	
 }

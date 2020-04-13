@@ -1,38 +1,47 @@
 package custom.Human;
 import custom.Fluids.Fluid;
+import custom.Shop.Shop;
 import custom.Vessels.Vessel;
 
 public class Human 
 {
 	private String name;
 	
-	Human(String name)
+	public Human(String name)
 	{
 		this.name = name;
 	}
 	
-	void pourLiquid(Vessel source, Vessel dest) 
+	public void pourLiquid(Vessel source, Vessel dest) 
 	{
-		dest.acceptLiquid(source.pourOutLiquid(dest.volume));
+		dest.acceptLiquid(source.pourOutLiquid(dest.getVolume()));
 	}
 	
 	//Drink entire contents of Vessel, return status message
-	String drinkLiquid(Vessel source)
+	public String drinkLiquid(Vessel source)
 	{
-		Fluid drink = source.pourOutLiquid(source.volume);
+		Fluid drink = source.pourOutLiquid(source.getVolume());
 		if(drink.getVolume() == 0)
 			return "No liquid to drink!";
 
 		String result;
 		result = "Drank " + drink.getVolume() +
-				 "units of " + drink.getClass().getName() + "!";
+				 " units of " + drink.getType() + "!";
 		
 		return result;
 	}
 	
-	String getName()
+	public String getName()
 	{
 		return name;
 	}
 	
+	public Vessel buyItem(Shop source, int itemNum)
+	{
+		Vessel item;
+		
+		item = source.serveCustomer(itemNum);
+		
+		return item;
+	}
 }
